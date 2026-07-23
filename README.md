@@ -4,8 +4,9 @@
 
 This package offers a plain implementation of the LiDAR-IMU odometry estimation in GLIM for educational purposes. Some of the unnecessary features for extension purposes in the original implementation are removed, and the code is simplified to make it easier to understand.
 
-Paper: Koide et al., GLIM: 3D Range-Inertial Localization and Mapping with GPU-Accelerated Scan Matching Factors, Robotics and Autonomous Systems, 2024
+![factor graph](data/figs/graph.png)
 
+Paper: Koide et al., GLIM: 3D Range-Inertial Localization and Mapping with GPU-Accelerated Scan Matching Factors, Robotics and Autonomous Systems, 2024
 
 ## How to use
 
