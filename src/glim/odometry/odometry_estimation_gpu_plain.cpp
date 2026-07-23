@@ -15,7 +15,7 @@ using gtsam::symbol_shorthand::X;  // IMU pose       (T_world_imu)
 /// @brief Constructor for OdometryEstimationGPUPlain
 /// @param params  Parameters for OdometryEstimationGPUPlain
 OdometryEstimationGPUPlain::OdometryEstimationGPUPlain(const OdometryEstimationPlainGPUParams& params) : params(params) {
-  logger->info("initializing OdometryEstimationGPUPlain");
+  logger->info("Hello OdometryEstimationGPUPlain!!");
 
   marginalized_cursor = 0;
   T_lidar_imu = params.T_lidar_imu;

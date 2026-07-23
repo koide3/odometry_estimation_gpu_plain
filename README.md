@@ -69,3 +69,11 @@ Run with the configuration
 ```bash
 ros2 run glim_ros glim_rosbag mid360_02 --ros-args -p config_path:=$(realpath ~/config)
 ```
+
+You should see output like the following in the terminal:
+```
+[2026-07-23 10:28:34.317] [glim] [info] config_path: /home/koide/config
+[2026-07-23 10:28:34.317] [glim] [info] load libodometry_estimation_gpu_plain.so
+[2026-07-23 10:28:34.645] [odom] [info] Hello OdometryEstimationGPUPlain!!
+...
+```
