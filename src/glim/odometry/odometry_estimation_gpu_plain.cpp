@@ -22,7 +22,7 @@ OdometryEstimationGPUPlain::OdometryEstimationGPUPlain(const OdometryEstimationP
   T_imu_lidar = T_lidar_imu.inverse();
 
   // initialize utility classes
-  init_estimation = std::make_unique<LooseInitialStateEstimation>(params.T_lidar_imu, Eigen::Matrix<double, 6, 1>::Zero());
+  init_estimation = std::make_unique<RobustInitialStateEstimation>(params.T_lidar_imu);
   imu_integration.reset(new IMUIntegration);
   imu_validation.reset(new IMUValidation(logger, true));
   deskewing.reset(new CloudDeskewing);

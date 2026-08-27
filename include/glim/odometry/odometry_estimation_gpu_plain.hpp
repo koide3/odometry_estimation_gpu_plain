@@ -29,7 +29,7 @@
 #include <glim/common/cloud_covariance_estimation.hpp>
 
 #include <glim/odometry/initial_state_estimation.hpp>
-#include <glim/odometry/loose_initial_state_estimation.hpp>
+#include <glim/odometry/robust_initial_state_estimation.hpp>
 #include <glim/odometry/callbacks.hpp>
 
 #include <glim/odometry/odometry_estimation_gpu_plain_params.hpp>
