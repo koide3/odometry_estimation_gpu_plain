@@ -63,8 +63,8 @@ cp ~/ros2_ws/src/odometry_estimation_gpu_plain/config/config_odometry_gpu_plain.
 ### Run
 
 Test data:
-- [mid360_01.tar.gz (154MB)](https://zenodo.org/record/7233945/files/mid360_01.tar.gz?download=1)
-- [mid360_02.tar.gz (253MB)](https://zenodo.org/record/7233945/files/mid360_02.tar.gz?download=1)
+- [mid360_01.tar.gz (154MB)](https://zenodo.org/records/21486938/files/mid360_01.tar.gz?download=1)
+- [mid360_02.tar.gz (253MB)](https://zenodo.org/records/21486938/files/mid360_02.tar.gz?download=1)
 
 Run with the configuration
 ```bash

@@ -209,8 +209,11 @@ EstimationFrame::ConstPtr OdometryEstimationGPUPlain::insert_frame(const Preproc
 
   // Create an identity between factor for the IMU bias based on the constant IMU bias assumption
   // B(last) and B(current) are the IMU bias variables for the last and current frames, respectively
-  new_factors.add(
-    gtsam::BetweenFactor<gtsam::imuBias::ConstantBias>(B(last), B(current), gtsam::imuBias::ConstantBias(), gtsam::noiseModel::Isotropic::Sigma(6, params.imu_bias_noise)));
+  const double sqrt_dt = std::sqrt(raw_frame->stamp - last_stamp);
+  gtsam::Vector6 bias_noise;
+  bias_noise << gtsam::Vector3::Constant(params.imu_bias_noise_acc * sqrt_dt), gtsam::Vector3::Constant(params.imu_bias_noise_gyro * sqrt_dt);
+  const auto bias_noise_model = gtsam::noiseModel::Diagonal::Sigmas(bias_noise);
+  new_factors.add(gtsam::BetweenFactor<gtsam::imuBias::ConstantBias>(B(last), B(current), gtsam::imuBias::ConstantBias(), bias_noise_model));
 
   // Create an IMU factor
   gtsam::ImuFactor::shared_ptr imu_factor = gtsam::make_shared<gtsam::ImuFactor>(X(last), V(last), X(current), V(current), B(last), imu_integration->integrated_measurements());

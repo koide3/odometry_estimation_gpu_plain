@@ -10,7 +10,8 @@ OdometryEstimationPlainGPUParams::OdometryEstimationPlainGPUParams() {
   // sensor config
   Config sensor_config(GlobalConfig::get_config_path("config_sensors"));
   T_lidar_imu = sensor_config.param<Eigen::Isometry3d>("sensors", "T_lidar_imu", Eigen::Isometry3d::Identity());
-  imu_bias_noise = sensor_config.param<double>("sensors", "imu_bias_noise", 1e-3);
+  imu_bias_noise_acc = sensor_config.param<double>("sensors", "imu_bias_noise_acc", 1e-3);
+  imu_bias_noise_gyro = sensor_config.param<double>("sensors", "imu_bias_noise_gyro", 1e-3);
 
   // odometry config
   Config config(GlobalConfig::get_config_path("config_odometry"));

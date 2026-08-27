@@ -15,7 +15,8 @@ public:
 
 public:
   // Sensor params;
-  double imu_bias_noise;          // IMU bias noise (over time)
+  double imu_bias_noise_acc;      // IMU bias noise [m/s^3/sqrt(Hz)]
+  double imu_bias_noise_gyro;     // IMU bias noise [rad/s^2/sqrt(Hz)]
   Eigen::Isometry3d T_lidar_imu;  // LiDAR-IMU transformation
 
   // Registration params
