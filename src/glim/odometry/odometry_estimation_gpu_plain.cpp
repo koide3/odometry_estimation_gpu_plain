@@ -80,7 +80,7 @@ EstimationFrame::ConstPtr OdometryEstimationGPUPlain::insert_frame(const Preproc
 
   // Handling the very first frame
   if (frames.empty()) {
-    // Perform initial state (pose & velocity) estimation and see if it is ready
+    // Perform initial state (pose & velocity & IMU bias) estimation and see if it is ready
     EstimationFrame::ConstPtr init_state;
     init_estimation->insert_frame(raw_frame);
     init_state = init_estimation->initial_pose();
@@ -144,9 +144,9 @@ EstimationFrame::ConstPtr OdometryEstimationGPUPlain::insert_frame(const Preproc
     frames.push_back(new_frame);
 
     // Initialize the estimator
-    gtsam::Values new_values;
-    gtsam::NonlinearFactorGraph new_factors;
-    gtsam::FixedLagSmootherKeyTimestampMap new_stamps;
+    gtsam::Values new_values;                           // New values to be added to the optimizer
+    gtsam::NonlinearFactorGraph new_factors;            // New factors to be added to the optimizer
+    gtsam::FixedLagSmootherKeyTimestampMap new_stamps;  // Timestamps for the new values
 
     new_stamps[X(0)] = raw_frame->stamp;
     new_stamps[V(0)] = raw_frame->stamp;
@@ -162,16 +162,19 @@ EstimationFrame::ConstPtr OdometryEstimationGPUPlain::insert_frame(const Preproc
     new_factors.emplace_shared<gtsam_points::LinearDampingFactor>(B(0), 6, 1e6);
     new_factors.add(create_matching_cost_factors(current));
 
+    // Add new values, factors, and timestamps to the optimizer and update internal states
     smoother->update(new_factors, new_values, new_stamps);
     update_frames(current);
 
     return frames.back();
   }
 
+  /*** Process of non-first frames ***/
+
   // New values, factors, and timestamps to be added to the optimizer
-  gtsam::Values new_values;
-  gtsam::NonlinearFactorGraph new_factors;
-  gtsam::FixedLagSmootherKeyTimestampMap new_stamps;
+  gtsam::Values new_values;                           // New values to be added to the optimizer
+  gtsam::NonlinearFactorGraph new_factors;            // New factors to be added to the optimizer
+  gtsam::FixedLagSmootherKeyTimestampMap new_stamps;  // Timestamps for the new values
 
   // The last frame's timestamp and states
   const double last_stamp = frames[last]->stamp;
@@ -181,7 +184,7 @@ EstimationFrame::ConstPtr OdometryEstimationGPUPlain::insert_frame(const Preproc
   const auto last_imu_bias = smoother->calculateEstimate<gtsam::imuBias::ConstantBias>(B(last));
   const gtsam::NavState last_nav_world_imu(last_T_world_imu, last_v_world_imu);
 
-  // IMU integration from the last frame to the current frame
+  // IMU integration from the last frame to the current frame for state prediction
   int num_imu_integrated = 0;
   const int imu_read_cursor = imu_integration->integrate_imu(last_stamp, raw_frame->stamp, last_imu_bias, &num_imu_integrated);
   imu_integration->erase_imu_data(imu_read_cursor);
@@ -424,7 +427,7 @@ gtsam::NonlinearFactorGraph OdometryEstimationGPUPlain::create_matching_cost_fac
   // Full connection window
   // Create factors between the latest frame and the previous frames within the full connection window (e.g., 3 frames)
   for (int target = current - params.full_connection_window_size; target < current; target++) {
-    if (target < 0) {
+    if (target < 0 || !frames.has_index(target)) {
       continue;
     }
 
